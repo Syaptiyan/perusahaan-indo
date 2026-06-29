@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Perusahaan Indonesia</title>
+    <meta name="description" content="Daftar lengkap Perusahaan Indonesia berdasarkan kategori">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        :root {
+            --bg: #050505;
+            --bg2: #0a0a0a;
+            --card: rgba(255,255,255,0.03);
+            --card-hover: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.06);
+            --text: #fafafa;
+            --text2: rgba(255,255,255,0.6);
+            --text3: rgba(255,255,255,0.4);
+            --blue: #3b82f6;
+            --blue-glow: rgba(59,130,246,0.15);
+            --green: #22c55e;
+            --green-glow: rgba(34,197,94,0.15);
+            --purple: #a855f7;
+            --purple-glow: rgba(168,85,247,0.15);
+            --orange: #f97316;
+            --orange-glow: rgba(249,115,22,0.15);
+            --red: #ef4444;
+            --red-glow: rgba(239,68,68,0.15);
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6,182,212,0.15);
+            --yellow: #eab308;
+            --yellow-glow: rgba(234,179,8,0.15);
+            --pink: #ec4899;
+            --pink-glow: rgba(236,72,153,0.15);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family:'Plus Jakarta Sans',sans-serif;
+            background:var(--bg);
+            color:var(--text);
+            line-height:1.6;
+            -webkit-font-smoothing:antialiased;
+        }
+
+        /* NAV */
+        nav {
+            position:fixed; top:0; width:100%; z-index:100;
+            padding:20px 0;
+            background:rgba(5,5,5,0.85);
+            backdrop-filter:blur(20px);
+            border-bottom:1px solid rgba(255,255,255,0.05);
+            transition:all .3s;
+        }
+        nav.shrink { padding:12px 0; }
+        .nav-inner {
+            max-width:1200px; margin:0 auto; padding:0 32px;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .logo {
+            font-weight:900; font-size:1.3rem;
+            display:flex; align-items:center; gap:12px;
+        }
+        .logo-icon {
+            width:36px; height:36px; border-radius:10px;
+            background:linear-gradient(135deg, var(--blue), var(--cyan));
+            display:flex; align-items:center; justify-content:center;
+            color:#fff; font-size:.9rem;
+        }
+        .nav-links { display:flex; gap:28px; list-style:none; }
+        .nav-links a {
+            font-size:.85rem; font-weight:500; color:var(--text2);
+            transition:color .2s;
+        }
+        .nav-links a:hover { color:var(--text); }
+        .hamburger {
+            display:none; background:none; border:none;
+            color:var(--text); font-size:1.3rem; cursor:pointer;
+        }
+
+        /* HERO */
+        .hero {
+            min-height:100vh; display:flex; align-items:center;
+            position:relative; overflow:hidden;
+        }
+        .hero-bg {
+            position:absolute; inset:0;
+            background:radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 60%);
+        }
+        .hero-grid {
+            position:absolute; inset:0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size:60px 60px;
+            mask-image:radial-gradient(ellipse at 50% 50%, black, transparent);
+        }
+        .hero-content {
+            position:relative; z-index:2;
+            max-width:1200px; margin:0 auto; padding:120px 32px 0;
+            text-align:center;
+        }
+        .hero-badge {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:8px 20px; border-radius:100px;
+            background:rgba(255,255,255,0.04);
+            border:1px solid rgba(255,255,255,0.08);
+            font-size:.8rem; font-weight:600; color:var(--text2);
+            margin-bottom:32px;
+        }
+        .hero-badge i { color:var(--blue); }
+        .hero h1 {
+            font-size:clamp(2.8rem, 7vw, 5.5rem);
+            font-weight:900; letter-spacing:-2px;
+            line-height:1; margin-bottom:24px;
+        }
+        .hero h1 .accent { color:var(--blue); }
+        .hero p {
+            font-size:1.15rem; color:var(--text2);
+            max-width:550px; margin:0 auto 48px; line-height:1.8;
+        }
+        .hero-stats {
+            display:flex; justify-content:center; gap:56px; flex-wrap:wrap;
+        }
+        .stat-num {
+            font-size:2.8rem; font-weight:900;
+            background:linear-gradient(135deg, var(--text), var(--text2));
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+        }
+        .stat-label {
+            font-size:.8rem; color:var(--text3); font-weight:500; margin-top:4px;
+        }
+
+        /* LAYOUT */
+        .wrap { max-width:1200px; margin:0 auto; padding:0 32px; }
+        section { padding:80px 0; }
+
+        /* CATEGORIES */
+        .cats {
+            display:flex; gap:10px; flex-wrap:wrap;
+            justify-content:center; margin-bottom:48px;
+        }
+        .cat-btn {
+            padding:10px 20px; border-radius:12px;
+            border:1px solid var(--border); background:var(--card);
+            color:var(--text2); font-size:.8rem; font-weight:600;
+            cursor:pointer; transition:all .2s; font-family:inherit;
+            display:flex; align-items:center; gap:8px;
+        }
+        .cat-btn:hover, .cat-btn.active {
+            border-color:var(--blue); color:var(--text); background:var(--blue-glow);
+        }
+        .cat-btn i { font-size:.9rem; }
+
+        /* SEARCH */
+        .search-bar {
+            display:flex; gap:12px; margin-bottom:40px;
+            max-width:600px; margin-left:auto; margin-right:auto;
+        }
+        .search-input {
+            flex:1;
+            padding:14px 20px; border-radius:14px;
+            border:1px solid var(--border); background:var(--card);
+            color:var(--text); font-size:.9rem; font-family:inherit;
+            transition:all .2s;
+        }
+        .search-input:focus {
+            outline:none; border-color:var(--blue);
+            box-shadow:0 0 0 3px var(--blue-glow);
+        }
+        .search-input::placeholder { color:var(--text3); }
+
+        /* GRID */
+        .comp-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+            gap:20px;
+        }
+        .comp-card {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:20px; padding:28px;
+            transition:all .3s; cursor:pointer;
+        }
+        .comp-card:hover {
+            background:var(--card-hover); border-color:rgba(59,130,246,0.3);
+            transform:translateY(-4px); box-shadow:0 16px 32px rgba(0,0,0,0.2);
+        }
+        .comp-top {
+            display:flex; align-items:center; gap:16px; margin-bottom:16px;
+        }
+        .comp-logo {
+            width:52px; height:52px; border-radius:14px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.3rem; font-weight:800; color:#fff; flex-shrink:0;
+        }
+        .comp-info h3 { font-size:1.05rem; font-weight:700; margin-bottom:2px; }
+        .comp-cat {
+            font-size:.7rem; font-weight:600; padding:3px 10px;
+            border-radius:100px; display:inline-block;
+        }
+        .comp-desc {
+            font-size:.82rem; color:var(--text2); line-height:1.7;
+            margin-bottom:14px;
+        }
+        .comp-tags { display:flex; gap:6px; flex-wrap:wrap; }
+        .comp-tag {
+            padding:4px 10px; border-radius:100px;
+            font-size:.65rem; font-weight:600;
+            background:rgba(255,255,255,0.04); color:var(--text2);
+        }
+
+        /* MODAL */
+        .modal-bg {
+            position:fixed; inset:0; z-index:200;
+            background:rgba(0,0,0,0.85); backdrop-filter:blur(16px);
+            display:flex; align-items:center; justify-content:center;
+            padding:24px; opacity:0; visibility:hidden; transition:all .3s;
+        }
+        .modal-bg.open { opacity:1; visibility:visible; }
+        .modal {
+            background:var(--bg2); border:1px solid var(--border);
+            border-radius:28px; max-width:700px; width:100%;
+            max-height:85vh; overflow-y:auto;
+            transform:scale(0.95) translateY(16px); transition:all .3s;
+        }
+        .modal-bg.open .modal { transform:scale(1) translateY(0); }
+        .modal-head {
+            padding:40px 40px 28px;
+            border-bottom:1px solid var(--border);
+            position:relative;
+        }
+        .modal-close {
+            position:absolute; top:16px; right:16px;
+            width:36px; height:36px; border-radius:10px;
+            background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+            color:var(--text2); display:flex; align-items:center; justify-content:center;
+            cursor:pointer; transition:all .2s;
+        }
+        .modal-close:hover { background:rgba(255,255,255,0.08); color:var(--text); }
+        .modal-top { display:flex; align-items:center; gap:20px; margin-bottom:16px; }
+        .modal-logo {
+            width:64px; height:64px; border-radius:16px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.5rem; font-weight:800; color:#fff; flex-shrink:0;
+        }
+        .modal-name { font-size:1.5rem; font-weight:800; }
+        .modal-cat { font-size:.8rem; font-weight:600; }
+        .modal-body { padding:28px 40px 40px; }
+        .modal-section { margin-bottom:28px; }
+        .modal-sec-title {
+            font-size:.7rem; font-weight:700;
+            text-transform:uppercase; letter-spacing:1px;
+            color:var(--text3); margin-bottom:10px;
+        }
+        .modal-text { color:var(--text2); font-size:.9rem; line-height:1.8; }
+        .detail-grid {
+            display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;
+        }
+        .detail-item {
+            background:rgba(255,255,255,0.02); border-radius:14px; padding:16px;
+        }
+        .detail-label { font-size:.7rem; color:var(--text3); font-weight:500; margin-bottom:2px; }
+        .detail-value { font-size:.95rem; font-weight:700; }
+
+        /* LOADING */
+        .loading { text-align:center; padding:60px 0; }
+        .loading i { font-size:2rem; color:var(--blue); animation:spin 1s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* EMPTY */
+        .empty { text-align:center; padding:80px 0; color:var(--text3); }
+        .empty i { font-size:3rem; margin-bottom:16px; display:block; }
+
+        /* BACK TOP */
+        .back-top {
+            position:fixed; bottom:24px; right:24px;
+            width:48px; height:48px; border-radius:14px;
+            background:var(--blue); color:#fff;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1rem; cursor:pointer; border:none;
+            opacity:0; transform:translateY(20px);
+            transition:all .3s; z-index:90;
+        }
+        .back-top.show { opacity:1; transform:translateY(0); }
+        .back-top:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(59,130,246,0.3); }
+
+        /* FOOTER */
+        footer {
+            padding:40px 0; text-align:center;
+            border-top:1px solid rgba(255,255,255,0.04);
+        }
+        footer p { color:var(--text3); font-size:.8rem; }
+        footer a { color:var(--blue); text-decoration:none; }
+
+        /* CAT COLORS */
+        .cat-bank { background:var(--blue-glow); color:var(--blue); }
+        .cat-telko { background:var(--green-glow); color:var(--green); }
+        .cat-ecommerce { background:var(--orange-glow); color:var(--orange); }
+        .cat-tech { background:var(--purple-glow); color:var(--purple); }
+        .cat-fnb { background:var(--red-glow); color:var(--red); }
+        .cat-auto { background:var(--cyan-glow); color:var(--cyan); }
+        .cat-mining { background:var(--yellow-glow); color:var(--yellow); }
+        .cat-prop { background:var(--pink-glow); color:var(--pink); }
+        .cat-retail { background:rgba(255,255,255,0.08); color:var(--text); }
+        .cat-energy { background:rgba(16,185,129,0.15); color:#10b981; }
+        .cat-aviation { background:rgba(99,102,241,0.15); color:#818cf8; }
+        .cat-pharma { background:rgba(244,114,182,0.15); color:#f472b6; }
+
+        /* RESPONSIVE */
+        @media(max-width:768px) {
+            .nav-links { display:none; }
+            .nav-links.show {
+                display:flex; flex-direction:column;
+                position:absolute; top:100%; left:0; right:0;
+                background:rgba(5,5,5,0.98); backdrop-filter:blur(20px);
+                padding:24px 32px; gap:20px;
+                border-bottom:1px solid var(--border);
+            }
+            .nav-links.show a { font-size:1rem; }
+            .hamburger { display:block; }
+            .hero h1 { letter-spacing:-1px; }
+            .hero-stats { gap:28px; }
+            .stat-num { font-size:2rem; }
+            .comp-grid { grid-template-columns:1fr; }
+            .detail-grid { grid-template-columns:1fr; }
+            .modal-head, .modal-body { padding:24px; }
+            .modal-top { flex-direction:column; text-align:center; }
+        }
+    </style>
+</head>
+<body x-data="app()">
+
+<nav :class="{shrink:scrolled}">
+    <div class="nav-inner">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-building"></i></div>
+            Perusahaan RI
+        </div>
+        <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('show')">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#beranda" onclick="document.querySelector('.nav-links').classList.remove('show')">Beranda</a></li>
+            <li><a href="#daftar" onclick="document.querySelector('.nav-links').classList.remove('show')">Daftar</a></li>
+            <li><a href="https://syaptiyan.github.io" target="_blank">← Portfolio</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="beranda">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-building"></i> Data Perusahaan</div>
+        <h1>Perusahaan<br><span class="accent">Indonesia</span></h1>
+        <p>Daftar lengkap perusahaan besar di Indonesia berdasarkan kategori — Bank, Telkom, E-commerce, Teknologi, dan banyak lagi.</p>
+        <div class="hero-stats">
+            <div><div class="stat-num" x-text="companies.length || '...'">0</div><div class="stat-label">Perusahaan</div></div>
+            <div><div class="stat-num" x-text="cats.length">0</div><div class="stat-label">Kategori</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- DAFTAR -->
+<section id="daftar">
+    <div class="wrap">
+        <!-- CATEGORIES -->
+        <div class="cats">
+            <button class="cat-btn" :class="{active:selCat===''}" @click="selCat='';filter()">
+                <i class="fas fa-th"></i> Semua
+            </button>
+            <template x-for="c in cats" :key="c.id">
+                <button class="cat-btn" :class="{active:selCat===c.id}" @click="selCat=c.id;filter()">
+                    <i :class="c.icon"></i> <span x-text="c.name"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Cari perusahaan..." x-model="q" @input="filter()">
+        </div>
+
+        <!-- GRID -->
+        <div class="comp-grid">
+            <template x-for="c in filtered" :key="c.name">
+                <div class="comp-card" @click="open(c)">
+                    <div class="comp-top">
+                        <div class="comp-logo" :style="'background:'+getCat(c.cat).color" x-text="c.initials"></div>
+                        <div class="comp-info">
+                            <h3 x-text="c.name"></h3>
+                            <span class="comp-cat" :class="'cat-'+c.cat" x-text="getCat(c.cat).name"></span>
+                        </div>
+                    </div>
+                    <p class="comp-desc" x-text="c.desc"></p>
+                    <div class="comp-tags">
+                        <template x-for="t in c.tags" :key="t">
+                            <span class="comp-tag" x-text="t"></span>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- EMPTY -->
+        <div class="empty" x-show="filtered.length===0">
+            <i class="fas fa-search"></i>
+            <p>Tidak ada perusahaan ditemukan.</p>
+        </div>
+    </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-bg" :class="{open:modal}" @click.self="close()">
+    <div class="modal" x-show="modal" x-transition>
+        <div class="modal-head">
+            <button class="modal-close" @click="close()"><i class="fas fa-times"></i></button>
+            <div class="modal-top">
+                <div class="modal-logo" :style="'background:'+getCat(sel?.cat).color" x-text="sel?.initials"></div>
+                <div>
+                    <div class="modal-name" x-text="sel?.name"></div>
+                    <div class="modal-cat" :class="'cat-'+sel?.cat" x-text="getCat(sel?.cat).name" style="display:inline-block;padding:4px 12px;border-radius:100px;margin-top:4px"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body" x-show="sel">
+            <div class="modal-section">
+                <div class="modal-sec-title">Tentang</div>
+                <p class="modal-text" x-text="sel?.fullDesc"></p>
+            </div>
+            <div class="modal-section">
+                <div class="modal-sec-title">Informasi</div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Didirikan</div>
+                        <div class="detail-value" x-text="sel?.founded"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Kantor Pusat</div>
+                        <div class="detail-value" x-text="sel?.hq"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Pendiri</div>
+                        <div class="detail-value" x-text="sel?.founder"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">CEO</div>
+                        <div class="detail-value" x-text="sel?.ceo"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Kategori</div>
+                        <div class="detail-value" x-text="getCat(sel?.cat).name"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value" x-text="sel?.status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="back-top" :class="{show:showTop}" @click="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<footer>
+    <div class="wrap">
+        <p>&copy; 2026 Syaptiyan Ade Putra &middot; <a href="https://syaptiyan.github.io">syaptiyan.github.io</a></p>
+    </div>
+</footer>
+
+<script>
+function app(){
+    return {
+        companies:[],
+        filtered:[],
+        q:'',
+        selCat:'',
+        modal:false,
+        sel:null,
+        showTop:false,
+        scrolled:false,
+        cats:[
+            {id:'bank',name:'Bank',icon:'fas fa-university',color:'linear-gradient(135deg,#3b82f6,#06b6d4)'},
+            {id:'telko',name:'Telekomunikasi',icon:'fas fa-tower-cell',color:'linear-gradient(135deg,#22c55e,#10b981)'},
+            {id:'ecommerce',name:'E-Commerce',icon:'fas fa-cart-shopping',color:'linear-gradient(135deg,#f97316,#f59e0b)'},
+            {id:'tech',name:'Teknologi',icon:'fas fa-microchip',color:'linear-gradient(135deg,#a855f7,#6366f1)'},
+            {id:'fnb',name:'Makanan & Minuman',icon:'fas fa-utensils',color:'linear-gradient(135deg,#ef4444,#ec4899)'},
+            {id:'auto',name:'Otomoif',icon:'fas fa-car',color:'linear-gradient(135deg,#06b6d4,#0ea5e9)'},
+            {id:'mining',name:'Pertambangan',icon:'fas fa-hard-hat',color:'linear-gradient(135deg,#eab308,#f59e0b)'},
+            {id:'prop',name:'Properti',icon:'fas fa-house-chimney',color:'linear-gradient(135deg,#ec4899,#a855f7)'},
+            {id:'retail',name:'Retail',icon:'fas fa-store',color:'linear-gradient(135deg,#6b7280,#9ca3af)'},
+            {id:'energy',name:'Energi',icon:'fas fa-bolt',color:'linear-gradient(135deg,#10b981,#059669)'},
+            {id:'aviation',name:'Penerbangan',icon:'fas fa-plane',color:'linear-gradient(135deg,#818cf8,#6366f1)'},
+            {id:'pharma',name:'Farmasi',icon:'fas fa-pills',color:'linear-gradient(135deg,#f472b6,#ec4899)'}
+        ],
+        init(){
+            this.companies=[
+                // BANK
+                {name:'Bank Central Asia (BCA)',initials:'BCA',cat:'bank',desc:'Bank swasta terbesar di Indonesia dengan jaringan ATM terluas.',fullDesc:'Bank Central Asia (BCA) adalah bank swasta terbesar di Indonesia yang didirikan pada tahun 1957. BCA dikenal dengan jaringan ATM terluas di Indonesia dan menjadi salah satu bank dengan kapitalisasi pasar terbesar di BEI.',founded:'21 Februari 1957',hq:'Jakarta',founder:'Liem Sioe Liong (Sudono Salim)',ceo:'Jahja Setiaatmadja',status:'Tercatat di BEI (BBCA)',tags:['Swasta','ATM','Digital Banking']},
+                {name:'Bank Mandiri',initials:'BMRI',cat:'bank',desc:'Bank BUMN terbesar di Indonesia berdasarkan aset.',fullDesc:'Bank Mandiri adalah bank BUMN terbesar di Indonesia yang dibentuk dari penggabungan 4 bank pada tahun 1998. Bank ini menjadi tulang punggung perbankan BUMN dengan fokus pada kredit korporasi dan UMKM.',founded:'2 Oktober 1998',hq:'Jakarta',founder:'Pemerintah Indonesia',ceo:'Darmawan Junaidi',status:'Tercatat di BEI (BMRI)',tags:['BUMN','Korporasi','UMKM']},
+                {name:'Bank Rakyat Indonesia (BRI)',initials:'BRI',cat:'bank',desc:'Bank tertua di Indonesia yang fokus pada UMKM dan mikro.',fullDesc:'Bank Rakyat Indonesia (BRI) adalah bank tertua di Indonesia yang didirikan pada tahun 1895. BRI dikenal sebagai bank yang fokus pada pemberdayaan UMKM dan mikro dengan jaringan terluas hingga ke pedesaan.',founded:'16 Desember 1895',hq:'Jakarta',founder:'Pemerintah Hindia Belanda',ceo:'Sunarso',status:'Tercatat di BEI (BBRI)',tags:['BUMN','UMKM','Mikro']},
+                {name:'Bank Negara Indonesia (BNI)',initials:'BNI',cat:'bank',desc:'Bank BUMN yang menjadi bank devisa pertama Indonesia.',fullDesc:'Bank Negara Indonesia (BNI) adalah bank BUMN yang didirikan pada tahun 1946. BNI menjadi bank devisa pertama Indonesia dan dikenal dengan layanan perbankan internasionalnya.',founded:'5 Juli 1946',hq:'Jakarta',founder:'Pemerintah Indonesia',ceo:'Royke Tumilaar',status:'Tercatat di BEI (BBNI)',tags:['BUMN','Devisa','Internasional']},
+                {name:'Bank Syariah Indonesia (BSI)',initials:'BSI',cat:'bank',desc:'Bank syariah terbesar di Indonesia hasil merger 3 bank syariah BUMN.',fullDesc:'Bank Syariah Indonesia (BSI) adalah bank syariah terbesar di Indonesia yang dibentuk dari penggabungan Bank Syariah Mandiri, BNI Syariah, dan BRI Syariah pada tahun 2021.',founded:'1 Februari 2021',hq:'Jakarta',founder:'Pemerintah Indonesia',ceo:'Hery Gunardi',status:'Tercatat di BEI (BRIS)',tags:['Syariah','BUMN','Merger']},
+                {name:'Bank Danamon',initials:'BDMN',cat:'bank',desc:'Bank swasta yang fokus pada consumer banking dan SME.',fullDesc:'Bank Danamon adalah bank swasta yang didirikan pada tahun 1956. Bank ini dimiliki oleh MUFG dan fokus pada consumer banking serta UMKM.',founded:'1956',hq:'Jakarta',founder:'Ang Jan Goan',ceo:'Yasushi Itagaki',status:'Tercatat di BEI (BDMN)',tags:['Swasta','MUFG','Consumer']},
+
+                // TELEKOMUNIKASI
+                {name:'Telkomsel',initials:'TSEL',cat:'telko',desc:'Operator seluler terbesar di Indonesia dengan 170+ juta pelanggan.',fullDesc:'Telkomsel adalah operator seluler terbesar di Indonesia yang didirikan pada tahun 1995. Telkomsel dimiliki oleh Telkom Indonesia dan Singtel, dengan jaringan terluas hingga ke pelosok Indonesia.',founded:'26 Mei 1995',hq:'Jakarta',founder:'Telkom Indonesia',ceo:'Hendri Mulya Syam',status:'Anak perusahaan Telkom',tags:['Seluler','4G/5G','Telkom']},
+                {name:'Indosat Ooredoo Hutchison',initials:'IOH',cat:'telko',desc:'Operator seluler terbesar kedua di Indonesia hasil merger Indosat dan Hutchison.',fullDesc:'Indosat Ooredoo Hutchison adalah hasil merger antara Indosat Ooredoo dan Hutchison 3 Indonesia pada tahun 2022. Operator ini menjadi salah satu yang terbesar di Indonesia.',founded:'2022 (merger)',hq:'Jakarta',founder:'Pemerintah Indonesia (Indosat, 1967)',ceo:'Vikram Sinha',status:'Tercatat di BEI (ISAT)',tags:['Merger','Ooredoo','5G']},
+                {name:'XL Axiata',initials:'XL',cat:'telko',desc:'Operator seluler yang dimiliki oleh Axiata Group dari Malaysia.',fullDesc:'XL Axiata adalah operator seluler Indonesia yang dimiliki oleh Axiata Group. Didirikan pada tahun 1989, XL dikenal dengan paket data yang kompetitif.',founded:'1989',hq:'Jakarta',founder:'Dato\' Sri Jamaludin Ibrahim',ceo:'Dian Siswarini',status:'Tercatat di BEI (EXCL)',tags:['Axiata','Data','Kompetitif']},
+                {name:'Telkom Indonesia',initials:'TLKM',cat:'telko',desc:'BUMN telekomunikasi terbesar di Indonesia dengan infrastruktur jaringan terluas.',fullDesc:'Telkom Indonesia adalah BUMN telekomunikasi terbesar yang menyediakan layanan fixed line, internet, dan seluler (melalui Telkomsel). Telkom memiliki infrastruktur kabel laut terluas di Indonesia.',founded:'1882 ( sebagai perusahaan telepon pertama)',hq:'Bandung',founder:'Pemerintah Hindia Belanda',ceo:'Ririek Adriansyah',status:'Tercatat di BEI (TLKM)',tags:['BUMN','Infrastruktur','Fixed Line']},
+
+                // E-COMMERCE
+                {name:'Tokopedia',initials:'TP',cat:'ecommerce',desc:'Marketplace terbesar di Indonesia, bagian dari GoTo Group.',fullDesc:'Tokopedia adalah marketplace digital terbesar di Indonesia yang didirikan oleh William Tanuwijaya dan Leontinus Alpha Edison pada tahun 2009. Pada tahun 2021, Tokopedia bergabung dengan Gojek membentuk GoTo Group.',founded:'6 Februari 2009',hq:'Jakarta',founder:'William Tanuwijaya, Leontinus Alpha Edison',ceo:'Melissa Siska Juminto',status:'Bagian dari GoTo (GOTO)',tags:['Marketplace','GoTo','Unicorn']},
+                {name:'Shopee Indonesia',initials:'SH',cat:'ecommerce',desc:'E-commerce terpopuler di Indonesia berdasarkan jumlah pengunjung.',fullDesc:'Shopee Indonesia adalah bagian dari Sea Group (Singapura) yang masuk ke Indonesia pada tahun 2015. Shopee menjadi e-commerce terpopuler berdasarkan traffic dengan strategi promosi agresif.',founded:'2015 (masuk Indonesia)',hq:'Jakarta',founder:'Forrest Li (Sea Group)',ceo:'Handhika Jahja',status:'Anak perusahaan Sea Group',tags:['Sea Group','Marketplace','Populer']},
+                {name:'Bukalapak',initials:'BL',cat:'ecommerce',desc:'Marketplace Indonesia yang fokus pada pemberdayaan warung dan UMKM.',fullDesc:'Bukalapak adalah marketplace Indonesia yang didirikan oleh Achmad Zaky pada tahun 2010. Bukalapak dikenal dengan fokusnya pada pemberdayaan warung dan UMKM melalui program Mitra Bukalapak.',founded:'10 Januari 2010',hq:'Jakarta',founder:'Achmad Zaky',ceo:'Teddy Oetomo',status:'Tercatat di BEI (BUKA)',tags:['UMKM','Warung','Mitra']},
+                {name:'Blibli',initials:'BLI',cat:'ecommerce',desc:'E-commerce yang fokus pada produk berkualitas dan branded.',fullDesc:'Blibli adalah e-commerce Indonesia yang didirikan pada tahun 2011 oleh Djarum Group. Blibli fokus pada produk berkualitas dan branded dengan layanan pengiriman yang handal.',founded:'2011',hq:'Jakarta',founder:'Djarum Group',ceo:'Kusumo Martanto',status:'Anak perusahaan Djarum',tags:['Djarum','Branded','Berkualitas']},
+
+                // TEKNOLOGI
+                {name:'Gojek',initials:'GJ',cat:'tech',desc:'Super app terbesar di Indonesia untuk transportasi, pesan antar, dan pembayaran.',fullDesc:'Gojek adalah super app terbesar di Indonesia yang didirikan oleh Nadiem Makarim pada tahun 2010. Dimulai dari layanan ojek, Gojek berkembang menjadi ekosistem digital yang mencakup transportasi, pesan antar makanan, pembayaran, dan banyak lagi.',founded:'2010',hq:'Jakarta',founder:'Nadiem Makarim',ceo:'Andre Soelistyo (GoTo)',status:'Bagian dari GoTo (GOTO)',tags:['Super App','Ojek','GoTo']},
+                {name:'Traveloka',initials:'TL',cat:'tech',desc:'Platform travel dan lifestyle terbesar di Asia Tenggara.',fullDesc:'Traveloka adalah platform travel dan lifestyle terbesar di Asia Tenggara yang didirikan pada tahun 2012. Traveloka menyediakan layanan pemesanan tiket pesawat, hotel, dan berbagai produk lifestyle lainnya.',founded:'2012',hq:'Jakarta',founder:'Ferry Unardi, Derianto Kusuma, Albert Zhang',ceo:'Ferry Unardi',status:'Unicorn (valuasi $3+ miliar)',tags:['Travel','Unicorn','Lifestyle']},
+                {name:'Bukalapak (Teknologi)',initials:'MTR',cat:'tech',desc:'Ekosistem teknologi yang mencakup marketplace, fintech, dan logistik.',fullDesc:'Bukalapak telah berkembang menjadi ekosistem teknologi yang mencakup marketplace, fintech (BukaAja, BukaReksa), dan logistik. Perusahaan ini juga mengembangkan platform Mitra untuk warung.',founded:'2010',hq:'Jakarta',founder:'Achmad Zaky',ceo:'Teddy Oetomo',status:'Tercatat di BEI (BUKA)',tags:['Ekosistem','Fintech','Logistik']},
+                {name:'Dana',initials:'DANA',cat:'tech',desc:'Dompet digital terpopuler di Indonesia.',fullDesc:'Dana adalah dompet digital terpopuler di Indonesia yang didirikan pada tahun 2018. Dana dimiliki oleh Ant Financial (Alibaba) dan Elang Mahkota Teknologi (Emtek).',founded:'2018',hq:'Jakarta',founder:'Vincent Iswara',ceo:'Vincent Iswara',status:'Joint venture Ant-Emtek',tags:['Fintech','Dompet Digital','E-Wallet']},
+                {name:'OVO',initials:'OVO',cat:'tech',desc:'Platform pembayaran digital terbesar di Indonesia.',fullDesc:'OVO adalah platform pembayaran digital terbesar di Indonesia yang diluncurkan pada tahun 2017. OVO dimiliki oleh Lippo Group dan Grab, dan menjadi salah satu dompet digital yang paling banyak digunakan.',founded:'2017',hq:'Jakarta',founder:'Lippo Group',ceo:'Karaniya Dharmasaputra',status:'Dimiliki Grab & Lippo',tags:['Pembayaran','Grab','Lippo']},
+
+                // MAKANAN & MINUMAN
+                {name:'Indofood',initials:'INDF',cat:'fnb',desc:'Produsen mi instan terbesar di dunia (Indomie).',fullDesc:'Indofood adalah produsen makanan terbesar di Indonesia yang dikenal dengan produk Indomie. Perusahaan ini didirikan oleh Sudono Salim (Liem Sioe Liong) pada tahun 1990 dan menjadi produsen mi instan terbesar di dunia.',founded:'1990',hq:'Jakarta',founder:'Sudono Salim',ceo:'Anthoni Salim',status:'Tercatat di BEI (INDF)',tags:['Indomie','Mi Instan','Salim Group']},
+                {name:'Mayora Indah',initials:'MYOR',cat:'fnb',desc:'Produsen makanan ringan terbesar di Indonesia (Kopiko, Roma, Torabika).',fullDesc:'Mayora Indah adalah produsen makanan ringan dan minuman terbesar di Indonesia. Perusahaan ini dikenal dengan produk Kopiko, Roma, Torabika, dan banyak lagi.',founded:'1977',hq:'Jakarta',founder:'Joune Ganda',ceo:'Joune Ganda',status:'Tercatat di BEI (MYOR)',tags:['Kopiko','Roma','Snack']},
+                {name:'Wings Group',initials:'WINGS',cat:'fnb',desc:'Grup produsen produk rumah tangga dan makanan terbesar Indonesia.',fullDesc:'Wings Group adalah grup produsen produk rumah tangga dan makanan terbesar Indonesia. Didirikan pada tahun 1948, Wings dikenal dengan produk seperti So Klin, Daia, Mie Sedaap, dan banyak lagi.',founded:'1948',hq:'Surabaya',founder:'Johanes Ferdinand Katuari',ceo:'Johanes Ferdinand Katuari',status:'Swasta',tags:['Mie Sedaap','So Klin','Produk Rumah Tangga']},
+                {name:'Unilever Indonesia',initials:'UNVR',cat:'fnb',desc:'Produsen produk konsumen terbesar di Indonesia (Rinso, Pepsodent, Walls).',fullDesc:'Unilever Indonesia adalah anak perusahaan Unilever yang beroperasi di Indonesia sejak tahun 1933. Perusahaan ini memproduksi berbagai produk konsumen seperti Rinso, Pepsodent, Sunsilk, dan Walls.',founded:'1933',hq:'Jakarta',founder:'Unilever (Belanda/Inggris)',ceo:'Ira Noviarti',status:'Tercatat di BEI (UNVR)',tags:['Rinso','Pepsodent','Walls']},
+                {name:'Campina Ice Cream',initials:'CAMP',cat:'fnb',desc:'Produsen es krim lokal terbesar di Indonesia.',fullDesc:'Campina Ice Cream adalah produsen es krim lokal terbesar di Indonesia yang didirikan pada tahun 1972. Campina dikenal dengan produk es krim yang terjangkau dan berkualitas.',founded:'1972',hq:'Surabaya',founder:'Djoenaedi Joesoef',ceo:'Djoenaedi Joesoef',status:'Swasta',tags:['Es Krim','Lokal','Surabaya']},
+
+                // OTOMOTIF
+                {name:'Astra International',initials:'ASII',cat:'auto',desc:'Grup bisnis terdiversifikasi terbesar di Indonesia (Toyota, Daihatsu, Honda).',fullDesc:'Astra International adalah grup bisnis terdiversifikasi terbesar di Indonesia yang didirikan pada tahun 1957. Astra menjadi agen tunggal pemegang merek Toyota, Daihatsu, Isuzu, dan banyak lagi.',founded:'1957',hq:'Jakarta',founder:'Tjia Kian Tie',ceo:'Djony Bunarto Tjondro',status:'Tercatat di BEI (ASII)',tags:['Toyota','Daihatsu','Diversifikasi']},
+                {name:'Honda Prospect Motor',initials:'HPM',cat:'auto',desc:'Agen tunggal Honda di Indonesia untuk kendaraan roda empat.',fullDesc:'Honda Prospect Motor adalah agen tunggal Honda di Indonesia untuk kendaraan roda empat. Didirikan pada tahun 1999, HPM menjadi salah satu produsen mobil terbesar di Indonesia.',founded:'1999',hq:'Jakarta',founder:'Honda Motor Co.',ceo:'Kotaro Shimizu',status:'Joint venture Honda-Prospect',tags:['Honda','Mobil','Joint Venture']},
+                {name:'Toyota Astra Motor',initials:'TAM',cat:'auto',desc:'Agen tunggal Toyota di Indonesia dengan market share terbesar.',fullDesc:'Toyota Astra Motor adalah agen tunggal Toyota di Indonesia yang didirikan pada tahun 1971. TAM menjadi pemimpin pasar otomotif Indonesia dengan model-model populer seperti Avanza, Innova, dan Rush.',founded:'1971',hq:'Jakarta',founder:'Astra International & Toyota',ceo:'Susumu Matsuda',status:'Joint venture Toyota-Astra',tags:['Toyota','Market Leader','Avanza']},
+                {name:'Pertamina (Energi & Otomoif)',initials:'PTM',cat:'auto',desc:'BUMN energi yang juga bergerak di bidang otomotif melalui pelumas.',fullDesc:'Pertamina adalah BUMN energi terbesar di Indonesia yang juga bergerak di bidang otomotif melalui produk pelumas seperti Fastron dan Enduro. Pertamina menjadi sponsor F1.',founded:'10 Desember 1957',hq:'Jakarta',founder:'Pemerintah Indonesia',ceo:'Nicke Widyawati',status:'BUMN',tags:['Pelumas','Fastron','Energi']},
+
+                // PERTAMBANGAN
+                {name:'Freeport Indonesia',initials:'FCX',cat:'mining',desc:'Produsen tembaga dan emas terbesar di Indonesia (Grasberg).',fullDesc:'Freeport Indonesia adalah produsen tembaga dan emas terbesar di Indonesia yang mengoperasikan tambang Grasberg di Papua. Tambang ini merupakan salah satu tambang tembaga dan emas terbesar di dunia.',founded:'1967',hq:'Jakarta & Papua',founder:'Freeport-McMoRan',ceo:'Tony Wenas',status:'Anak perusahaan Inalum (BUMN)',tags:['Tembaga','Emas','Grasberg']},
+                {name:'Adaro Energy',initials:'ADRO',cat:'mining',desc:'Produsen batu bara terbesar kedua di Indonesia.',fullDesc:'Adaro Energy adalah produsen batu bara terbesar kedua di Indonesia yang didirikan pada tahun 1982. Adaro dikenal dengan batu bara kalori tinggi yang ramah lingkungan.',founded:'1982',hq:'Jakarta',founder:'Edwin Soeryadjaya',ceo:'Garibaldi Thohir',status:'Tercatat di BEI (ADRO)',tags:['Batu Bara','Kalori Tinggi','Ekspor']},
+                {name:'Bukit Asam',initials:'PTBA',cat:'mining',desc:'BUMN pertambangan batu bara terbesar di Indonesia.',fullDesc:'Bukit Asam adalah BUMN pertambangan batu bara terbesar di Indonesia yang beroperasi sejak tahun 1919. Perusahaan ini memiliki tambang utama di Tanjung Enim, Sumatera Selatan.',founded:'1919',hq:'Palembang',founder:'Pemerintah Hindia Belanda',ceo:'Suryo Eko Hadianto',status:'Tercatat di BEI (PTBA)',tags:['BUMN','Batu Bara','Sumatera']},
+                {name:'Vale Indonesia',initials:'INCO',cat:'mining',desc:'Produsen nikel terbesar di Indonesia.',fullDesc:'Vale Indonesia (dulunya INCO) adalah produsen nikel terbesar di Indonesia yang beroperasi di Sulawesi Selatan. Perusahaan ini dimiliki oleh Vale Brazil dan menjadi pemasok nikel global.',founded:'1968',hq:'Jakarta & Sulawesi',founder:'Vale Brazil',ceo:'Febriany Eddy',status:'Tercatat di BEI (INCO)',tags:['Nikel','Sulawesi','Vale']},
+
+                // PROPERTI
+                {name:'Ciputra Group',initials:'CTRA',cat:'prop',desc:'Grup properti terbesar di Indonesia dengan proyek di seluruh Indonesia.',fullDesc:'Ciputra Group adalah grup properti terbesar di Indonesia yang didirikan oleh Ir. Ciputra pada tahun 1981. Grup ini dikenal dengan proyek perumahan, mal, dan apartemen di seluruh Indonesia.',founded:'1981',hq:'Jakarta',founder:'Ir. Ciputra',ceo:'Candra Ciputra',status:'Tercatat di BEI (CTRA)',tags:['Perumahan','Mall','Apartemen']},
+                {name:'Lippo Group',initials:'LPKR',cat:'prop',desc:'Grup bisnis terdiversifikasi yang fokus pada properti dan healthcare.',fullDesc:'Lippo Group adalah grup bisnis terdiversifikasi yang didirikan oleh Mochtar Riady pada tahun 1950. Lippo dikenal dengan proyek Lippo Village, Lippo Mall, dan rumah sakit Siloam.',founded:'1950',hq:'Jakarta',founder:'Mochtar Riady',ceo:'John Riady',status:'Tercatat di BEI (LPKR)',tags:['Lippo Village','Siloam','Mall']},
+                {name:'Summarecon Agung',initials:'SMRA',cat:'prop',desc:'Pengembang properti terkemuka dengan fokus pada kota terpadu.',fullDesc:'Summarecon Agung adalah pengembang properti terkemuka yang didirikan pada tahun 1975. Perusahaan ini dikenal dengan proyek Summarecon Kelapa Gading dan Summarecon Serpong.',founded:'1975',hq:'Jakarta',founder:'Soetjipto Nagaria',ceo:'Adrian Hariyanto',status:'Tercatat di BEI (SMRA)',tags:['Kelapa Gading','Serpong','Kota Terpadu']},
+                {name:'BSD City (Sinarmas Land)',initials:'BSDE',cat:'prop',desc:'Pengembang kota mandiri terbesar (BSD City, Kota Deltamas).',fullDesc:'Sinarmas Land adalah pengembang prop terbesar di Indonesia yang mengembangkan BSD City, Kota Deltamas, dan Nuvasa Bay. Perusahaan ini dimiliki oleh Sinarmas Group.',founded:'1988',hq:'Jakarta',founder:'Eka Tjipta Widjaja',ceo:'Ishak Chandra',status:'Tercatat di BEI (BSDE)',tags:['BSD City','Sinarmas','Kota Mandiri']},
+
+                // RETAIL
+                {name:'Alfamart',initials:'AMRT',cat:'retail',desc:'Jaringan minimarket terbesar di Indonesia dengan 19.000+ gerai.',fullDesc:'Alfamart adalah jaringan minimarket terbesar di Indonesia yang didirikan pada tahun 1989. Dengan lebih dari 19.000 gerai, Alfamart menjadi salah satu retailer terbesar di Indonesia.',founded:'1989',hq:'Tangerang',founder:'Djoko Susanto',ceo:'Hans Prawira',status:'Tercatat di BEI (AMRT)',tags:['Minimarket','19000+ Gerai','Retail']},
+                {name:'Indomaret',initials:'INDO',cat:'retail',desc:'Jaringan minimarket terbesar kedua di Indonesia.',fullDesc:'Indomaret adalah jaringan minimarket terbesar kedua di Indonesia yang dimiliki oleh Salim Group. Didirikan pada tahun 1988, Indomaret memiliki 18.000+ gerai di seluruh Indonesia.',founded:'1988',hq:'Jakarta',founder:'Salim Group',ceo:'Darmawan Susanto',status:'Anak perusahaan Salim Group',tags:['Minimarket','Salim Group','18000+ Gerai']},
+                {name:'Matahari Department Store',initials:'LPPF',cat:'retail',desc:'Jaringan department store terbesar di Indonesia.',fullDesc:'Matahari Department Store adalah jaringan department store terbesar di Indonesia yang didirikan pada tahun 1958. Dengan 150+ gerai, Matahari menjadi ikon retail Indonesia.',founded:'1958',hq:'Jakarta',founder:'Husein Djojoadisoeprapto',ceo:'Terry O\'Connor',status:'Tercatat di BEI (LPPF)',tags:['Department Store','Mall','Ikon']},
+                {name:'MAP (Mitra Adiperkasa)',initials:'MAPI',cat:'retail',desc:'Grup retail terbesar yang menaungi Starbucks, Zara, Sephora, dll.',fullDesc:'Mitra Adiperkasa (MAP) adalah grup retail terbesar di Indonesia yang menaungi lebih dari 2.500 gerai termasuk Starbucks, Zara, Sephora, Marks & Spencer, dan banyak lagi.',founded:'1995',hq:'Jakarta',founder:'Harris Sani Widjaja',ceo:'V.P. Sharma',status:'Tercatat di BEI (MAPI)',tags:['Starbucks','Zara','Sephora']},
+
+                // ENERGI
+                {name:'Pertamina',initials:'PTM',cat:'energy',desc:'BUMN energi terbesar di Indonesia dan Fortune Global 500.',fullDesc:'Pertamina adalah BUMN energi terbesar di Indonesia yang bergerak di hulu dan hilir minyak & gas bumi. Pertamina masuk dalam daftar Fortune Global 500 dan menjadi penyedia BBM utama di Indonesia.',founded:'10 Desember 1957',hq:'Jakarta',founder:'Pemerintah Indonesia',ceo:'Nicke Widyawati',status:'BUMN (Fortune Global 500)',tags:['Minyak','Gas','BBM']},
+                {name:'PLN',initials:'PLN',cat:'energy',desc:'BUMN listrik yang memonopoli distribusi listrik di Indonesia.',fullDesc:'PLN (Perusahaan Listrik Negara) adalah BUMN yang memonopoli distribusi listrik di Indonesia. PLN melayani lebih dari 80 juta pelanggan di seluruh Indonesia.',founded:'27 Oktober 1945',hq:'Jakarta',founder:'Pemerintah Indonesia',ceo:'Darmawan Prasodjo',status:'BUMN',tags:['Listrik','Monopoli','Energi']},
+                {name:'Medco Energi',initials:'MEDC',cat:'energy',desc:'Perusahaan energi swasta terbesar di Indonesia.',fullDesc:'Medco Energi Internasional adalah perusahaan energi swasta terbesar di Indonesia yang didirikan oleh Arifin Panigoro pada tahun 1980. Perusahaan ini bergerak di hulu migas dan energi terbarukan.',founded:'1980',hq:'Jakarta',founder:'Arifin Panigoro',ceo:'Hilmi Panigoro',status:'Tercatat di BEI (MEDC)',tags:['Swasta','Migas','Terbarukan']},
+                {name:'Perusahaan Gas Negara (PGN)',initials:'PGAS',cat:'energy',desc:'BUMN gas bumi terbesar di Indonesia.',fullDesc:'PGN adalah BUMN gas bumi terbesar di Indonesia yang mengelola jaringan pipa gas terluas. PGN menjadi distributor gas utama untuk industri dan rumah tangga.',founded:'1965',hq:'Jakarta',founder:'Pemerintah Indonesia',ceo:'M. Haryo Yunianto',status:'Tercatat di BEI (PGAS)',tags:['Gas','Pipa','Distribusi']},
+
+                // PENERBANGAN
+                {name:'Garuda Indonesia',initials:'GIAA',cat:'aviation',desc:'Maskapai nasional Indonesia dan anggota SkyTeam.',fullDesc:'Garuda Indonesia adalah maskapai nasional Indonesia yang didirikan pada tahun 1949. Garuda menjadi anggota aliansi SkyTeam dan dikenal dengan layanan bintang 5.',founded:'26 Januari 1949',hq:'Jakarta',founder:'Pemerintah Indonesia',ceo:'Irfan Setiaputra',status:'Tercatat di BEI (GIAA)',tags:['Nasional','SkyTeam','Bintang 5']},
+                {name:'Lion Air',initials:'JT',cat:'aviation',desc:'Maskapai swasta terbesar di Indonesia berdasarkan jumlah penumpang.',fullDesc:'Lion Air adalah maskapai swasta terbesar di Indonesia yang didirikan oleh Rusdi Kirana pada tahun 1999. Lion Air dikenal dengan tiket terjangkau dan jaringan domestik terluas.',founded:'1999',hq:'Jakarta',founder:'Rusdi Kirana',ceo:'Rusdi Kirana',status:'Swasta',tags:['LCC','Domestik','Terjangkau']},
+                {name:'Batik Air',initials:'ID',cat:'aviation',desc:'Maskapai full-service dari Lion Air Group.',fullDesc:'Batik Air adalah maskapai full-service dari Lion Air Group yang diluncurkan pada tahun 2013. Batik Air menawarkan layanan premium dengan harga kompetitif.',founded:'2013',hq:'Jakarta',founder:'Lion Air Group',ceo:'Rusdi Kirana',status:'Anak perusahaan Lion Air',tags:['Full Service','Lion Air','Premium']},
+                {name:'Sriwijaya Air',initials:'SJ',cat:'aviation',desc:'Maskapai swasta terbesar kedua di Indonesia.',fullDesc:'Sriwijaya Air adalah maskapai swasta terbesar kedua di Indonesia yang didirikan pada tahun 2003. Maskapai ini dikenal dengan jaringan domestik dan regional yang luas.',founded:'2003',hq:'Jakarta',founder:'Chandra Lie',ceo:'Jeffrey Aer',status:'Swasta',tags:['Domestik','Regional','Swasta']},
+
+                // FARMASI
+                {name:'Kalbe Farma',initials:'KLBF',cat:'pharma',desc:'Perusahaan farmasi terbesar di Indonesia dan Asia Tenggara.',fullDesc:'Kalbe Farma adalah perusahaan farmasi terbesar di Indonesia dan Asia Tenggara yang didirikan pada tahun 1966. Kalbe memproduksi obat resep, OTC, dan nutrisi.',founded:'1966',hq:'Jakarta',founder:'Khouw Lip Tjoen',ceo:'Vidjongtius',status:'Tercatat di BEI (KLBF)',tags:['Farmasi','OTC','Nutrisi']},
+                {name:'Kimia Farma',initials:'KAEF',cat:'pharma',desc:'BUMN farmasi tertua di Indonesia.',fullDesc:'Kimia Farma adalah BUMN farmasi tertua di Indonesia yang berdiri sejak tahun 1817. Perusahaan ini mengelola jaringan apotek terbesar di Indonesia.',founded:'1817',hq:'Jakarta',founder:'Pemerintah Hindia Belanda',ceo:'David Utama',status:'Tercatat di BEI (KAEF)',tags:['BUMN','Apotek','Tertua']},
+                {name:'Sidomuncul',initials:'SIDO',cat:'pharma',desc:'Produsen jamu dan herbal terbesar di Indonesia (Tolak Angin).',fullDesc:'Sidomuncul adalah produsen jamu dan herbal terbesar di Indonesia yang dikenal dengan produk Tolak Angin. Perusahaan ini didirikan oleh Ibu Rahmat Sulistyo pada tahun 1951.',founded:'1951',hq:'Semarang',founder:'Rahmat Sulistyo',ceo:'Irwana Hadiwidjaja',status:'Tercatat di BEI (SIDO)',tags:['Jamu','Tolak Angin','Herbal']},
+                {name:'Enesis Group',initials:'ENESIS',cat:'pharma',desc:'Produsen produk kesehatan terbesar (S-1000, Vegeta, Proman).',fullDesc:'Enesis Group adalah produsen produk kesehatan dan kebersihan terbesar di Indonesia. Perusahaan ini dikenal dengan produk S-1000, Vegeta, Proman, dan banyak lagi.',founded:'1988',hq:'Jakarta',founder:'Eddy Kusnadi Sariaatmadja',ceo:'Eddy Kusnadi Sariaatmadja',status:'Swasta',tags:['S-1000','Vegeta','Kesehatan']}
+            ];
+            this.cats.forEach(c=>{
+                c.count=this.companies.filter(x=>x.cat===c.id).length;
+            });
+            this.filter();
+            window.addEventListener('scroll',()=>{this.scrolled=window.scrollY>50;this.showTop=window.scrollY>400;});
+        },
+        getCat(id){return this.cats.find(c=>c.id===id)||{name:'',icon:'',color:''};},
+        filter(){
+            const q=this.q.toLowerCase();
+            this.filtered=this.companies.filter(c=>{
+                const ms=!q||c.name.toLowerCase().includes(q)||c.desc.toLowerCase().includes(q);
+                const mc=!this.selCat||c.cat===this.selCat;
+                return ms&&mc;
+            });
+        },
+        open(c){this.sel=c;this.modal=true;document.body.style.overflow='hidden';},
+        close(){this.modal=false;this.sel=null;document.body.style.overflow='';}
+    };
+}
+</script>
+
+</body>
+</html>
